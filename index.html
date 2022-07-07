@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sorting Algorithms</title>
+  </head>
+  <body>
+    <div class="container">
+      <pre class="comparisons" id="comparisons"></pre>
+      <div class="bars_container" id="bars_container"></div>
+
+      <div class="buttons_container">
+        <!-- <label for="slider">Array Size:</label> -->
+        <input
+          type="range"
+          id="slider"
+          min="70"
+          max="90"
+          step="5"
+          value="50"
+        />
+
+        <select name="" id="speed">
+          <option value="100">Slow</option>
+          <option value="50">Medium</option>
+          <option value="1">Fast</option>
+        </select>
+        <select name="" id="algorithms">
+          <option value="bubble">Bubble Sort</option>
+          <option value="insertion">Insertion Sort</option>
+          <option value="heap">Heap Sort</option>
+          <option value="merge">Merge Sort</option>
+          <option value="quick">Quick Sort</option>
+        </select>
+        <button id="random_btn">Randomize Array</button>
+        <button id="sort_btn">Sort</button>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

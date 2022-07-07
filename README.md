@@ -1,1 +1,1 @@
-# Lab-Sorting-Algorithms-Visualizer
+### Lab-Sorting-Algorithms-Visualizer
