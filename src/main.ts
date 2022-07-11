@@ -6,7 +6,7 @@ let sortBtn: HTMLElement | null = document.getElementById("sort_btn");
 let selectAlgorithm: HTMLInputElement | null = (document.getElementById("algorithms") as HTMLInputElement);
 let barsContainer: HTMLElement | null = document.getElementById("bars_container");
 let slider: HTMLInputElement | null = (document.getElementById("slider") as HTMLInputElement);
-let speed = document.getElementById("speed");
+let speed: HTMLInputElement | null = (document.getElementById("speed") as HTMLInputElement);
 let numsOfBars = parseInt(slider!.value);
 let heightFactor = 40;
 let speedFactor = 100;
@@ -16,11 +16,13 @@ let unsortedArray = new Array(numsOfBars);
 let comparisons: HTMLElement | null = document.getElementById("comparisons")
 let algorithmToUse = "";
 
-
 document.addEventListener("DOMContentLoaded", function () {
   unsortedArray = createRandomArray();
   generateDimensions();
   renderBars(unsortedArray);
+  selectAlgorithm!.value="bubble";
+  speed!.value="50";
+  slider!.value = "10";
 });
 
 slider.addEventListener("input", () => {
@@ -37,6 +39,7 @@ speed?.addEventListener("change", (e: any) => {
 
 selectAlgorithm?.addEventListener("change", () => {
   algorithmToUse = selectAlgorithm!.value;
+  localStorage.setItem("algorithm", algorithmToUse);
 });
 
 randomizeArray?.addEventListener("click", () => {
@@ -50,6 +53,9 @@ sortBtn?.addEventListener("click", () => {
   switch (algorithmToUse) {
     case "bubble":
       bubbleSort(unsortedArray);
+      break;
+    case "insertion":
+      insertionSort(unsortedArray);
       break;
     default:
       bubbleSort(unsortedArray);
@@ -82,7 +88,7 @@ function createRandomArray() {
 };
 
 function renderBars(array: number[]) {
-  let barDimension = dimensions!.find((item: any) => item.key === numsOfBars);
+  let barDimension = dimensions!.find((item: IDimensions) => item.key === numsOfBars);
   heightFactor = barDimension!.heightBar;
 
   for (let i = 0; i < numsOfBars; i++) {
@@ -115,15 +121,15 @@ async function bubbleSort(array: number[]) {
   blockButtons("none", "0.5");
   let postionChangesCounter = 0;
   let arrayAccessCounter = 0;
-  let bars: any | null = document.getElementsByClassName("bar");
+  let bars: any = document.getElementsByClassName("bar");
   for (let i = 0; i < array.length - 1; i++) {
     arrayAccessCounter++;
     for (let j = 0; j < array.length - 1; j++) {
       if (array[j] > array[j + 1]) {
-        comparisons!.textContent = `Bubble Sort
+        comparisons!.textContent = `Bubble sort
         \nArray length: ${array.length}
         \nSwitched positions: ${(postionChangesCounter++).toString()}
-        \nArray accesses: ${(arrayAccessCounter).toString()}`;
+        \nArray accesses: ${(arrayAccessCounter).toString()}`
         for (let k = 0; k < bars!.length; k++) {
           if (k !== j && k !== j + 1) {
             bars![k].style.backgroundColor = "#fff";
@@ -143,4 +149,42 @@ async function bubbleSort(array: number[]) {
   }
   blockButtons("auto", "1");
   return array;
-} 
+}
+
+async function insertionSort(array: number[]) {
+  let bars = (document.getElementsByClassName("bar") as HTMLCollectionOf<HTMLElement>);
+  blockButtons("none", "0.5");
+  let postionChangesCounter = 0;
+  let arrayAccessCounter = 0;
+  for (let i = 1; i < array.length; i++) {
+    let key = array[i];
+    let j = i - 1;
+    while (j >= 0 && array[j] > key) {
+      comparisons!.textContent = `Insertion sort
+        \nArray length: ${array.length}
+        \nSwitched positions: ${(postionChangesCounter++).toString()}
+        \nArray accesses: ${(arrayAccessCounter).toString()}`
+      array[j + 1] = array[j];
+      bars[j + 1].style.height = array[j + 1] * heightFactor + "px";
+      bars[j + 1].style.backgroundColor = "red";
+      await sleep(speedFactor);
+
+      for (let k = 0; k < bars.length; k++) {
+        if (k != j + 1) {
+          bars[k].style.backgroundColor = "#fff";
+        }
+      }
+      j = j - 1;
+    }
+    array[j + 1] = key;
+    bars[j + 1].style.height = array[j + 1] * heightFactor + "px";
+    bars[j + 1].style.backgroundColor = "lightgreen";
+    await sleep(speedFactor);
+  }
+
+  for (let k = 0; k < bars.length; k++) {
+    bars[k].style.backgroundColor = "#fff";
+  }
+  blockButtons("auto", "1");
+  return array;
+}
