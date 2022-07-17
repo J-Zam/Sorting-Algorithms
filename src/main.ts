@@ -17,6 +17,7 @@ let comparisons: HTMLElement | null = document.getElementById("comparisons")
 let algorithmToUse = "";
 
 document.addEventListener("DOMContentLoaded", function () {
+  numsOfBars = 10;
   unsortedArray = createRandomArray();
   generateDimensions();
   renderBars(unsortedArray);
@@ -120,26 +121,25 @@ function blockButtons(pointer: string, opacity: string) {
 async function bubbleSort(array: number[]) {
   blockButtons("none", "0.5");
   let postionChangesCounter = 0;
-  let arrayAccessCounter = 0;
+  let comparisonsCounter = 0;
   let bars: any = document.getElementsByClassName("bar");
   for (let i = 0; i < array.length - 1; i++) {
-    arrayAccessCounter++;
+    comparisonsCounter++;
     for (let j = 0; j < array.length - 1; j++) {
       if (array[j] > array[j + 1]) {
         comparisons!.textContent = `Bubble sort
+        \nTime Complexity: θ(n²)
         \nArray length: ${array.length}
         \nSwitched positions: ${(postionChangesCounter++).toString()}
-        \nArray accesses: ${(arrayAccessCounter).toString()}`
+        \nComparisons: ${(comparisonsCounter).toString()}`
         for (let k = 0; k < bars!.length; k++) {
           if (k !== j && k !== j + 1) {
             bars![k].style.backgroundColor = "#fff";
           }
         }
-        let temp = array[j];
-        array[j] = array[j + 1];
-        array[j + 1] = temp;
+        [array[j], array[j + 1]] = [array[j + 1], array[j]];
         bars![j].style.height = array[j] * heightFactor + "px";
-        bars![j].style.backgroundColor = "orange";
+        bars![j].style.backgroundColor = "red";
         bars![j + 1].style.height = array[j + 1] * heightFactor + "px";
         bars![j + 1].style.backgroundColor = "red";
         await sleep(speedFactor);
@@ -147,6 +147,12 @@ async function bubbleSort(array: number[]) {
     }
     await sleep(speedFactor);
   }
+
+  for (let k = 0; k < bars.length; k++) {
+    bars[k].style.backgroundColor = "#00ff00";
+    await sleep(speedFactor);
+  }
+
   blockButtons("auto", "1");
   return array;
 }
@@ -155,41 +161,42 @@ async function insertionSort(array: number[]) {
   let bars = (document.getElementsByClassName("bar") as HTMLCollectionOf<HTMLElement>);
   blockButtons("none", "0.5");
   let postionChangesCounter = 0;
-  let arrayAccessCounter = 0;
+  let comparisonsCounter = 0;
   for (let i = 1; i < array.length; i++) {
 
     for (let j = i; j >= 1; j--) {
-      let aux = array[j];
+      comparisonsCounter++;
       if (array[j] < array[j - 1]) {
+        let aux = array[j];
         comparisons!.textContent = `Insertion sort
+           \nTime Complexity: θ(n²)
            \nArray length: ${array.length}
            \nSwitched positions: ${(postionChangesCounter++).toString()}
-           \nArray accesses: ${(arrayAccessCounter).toString()}`;
+           \nComparisons: ${(comparisonsCounter).toString()}`;
 
-        array[j] = array[j - 1];
-        bars[j].style.height = array[j - 1] * heightFactor + "px";
+        array[j] = array[j-1];
+        bars[j].style.height = array[j] * heightFactor + "px";
         bars[j].style.backgroundColor = "red";
 
-        await sleep(speedFactor);
-        for (let k = 0; k < bars.length; k++) {
-          if ((k != j) || (k != j - 1))
-            bars[k].style.backgroundColor = "#fff";
-        };
-
-        array[j - 1] = aux;
+        array[j- 1] = aux;
         bars[j - 1].style.height = array[j - 1] * heightFactor + "px";
         bars[j - 1].style.backgroundColor = "red";
 
+        await sleep(speedFactor);
+
+        for (let k = 0; k < bars.length; k++) {
+          if ((k != j) || (k != j - 1))
+            bars[k].style.backgroundColor = "#fff";
+        }
       } else {
-        bars[j].style.height = array[j] * heightFactor + "px";
-        bars[j].style.backgroundColor = "lightGreen";
         break;
       }
     }
   }
 
   for (let k = 0; k < bars.length; k++) {
-    bars[k].style.backgroundColor = "#fff";
+    bars[k].style.backgroundColor = "#00ff00";
+    await sleep(speedFactor);
   }
   blockButtons("auto", "1");
   return array;
