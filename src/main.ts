@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
   unsortedArray = createRandomArray();
   generateDimensions();
   renderBars(unsortedArray);
-  selectAlgorithm!.value="bubble";
-  speed!.value="50";
+  selectAlgorithm!.value = "bubble";
+  speed!.value = "50";
   slider!.value = "10";
 });
 
@@ -157,29 +157,35 @@ async function insertionSort(array: number[]) {
   let postionChangesCounter = 0;
   let arrayAccessCounter = 0;
   for (let i = 1; i < array.length; i++) {
-    let key = array[i];
-    let j = i - 1;
-    while (j >= 0 && array[j] > key) {
-      comparisons!.textContent = `Insertion sort
-        \nArray length: ${array.length}
-        \nSwitched positions: ${(postionChangesCounter++).toString()}
-        \nArray accesses: ${(arrayAccessCounter).toString()}`
-      array[j + 1] = array[j];
-      bars[j + 1].style.height = array[j + 1] * heightFactor + "px";
-      bars[j + 1].style.backgroundColor = "red";
-      await sleep(speedFactor);
 
-      for (let k = 0; k < bars.length; k++) {
-        if (k != j + 1) {
-          bars[k].style.backgroundColor = "#fff";
-        }
+    for (let j = i; j >= 1; j--) {
+      let aux = array[j];
+      if (array[j] < array[j - 1]) {
+        comparisons!.textContent = `Insertion sort
+           \nArray length: ${array.length}
+           \nSwitched positions: ${(postionChangesCounter++).toString()}
+           \nArray accesses: ${(arrayAccessCounter).toString()}`;
+
+        array[j] = array[j - 1];
+        bars[j].style.height = array[j - 1] * heightFactor + "px";
+        bars[j].style.backgroundColor = "red";
+
+        await sleep(speedFactor);
+        for (let k = 0; k < bars.length; k++) {
+          if ((k != j) || (k != j - 1))
+            bars[k].style.backgroundColor = "#fff";
+        };
+
+        array[j - 1] = aux;
+        bars[j - 1].style.height = array[j - 1] * heightFactor + "px";
+        bars[j - 1].style.backgroundColor = "red";
+
+      } else {
+        bars[j].style.height = array[j] * heightFactor + "px";
+        bars[j].style.backgroundColor = "lightGreen";
+        break;
       }
-      j = j - 1;
     }
-    array[j + 1] = key;
-    bars[j + 1].style.height = array[j + 1] * heightFactor + "px";
-    bars[j + 1].style.backgroundColor = "lightgreen";
-    await sleep(speedFactor);
   }
 
   for (let k = 0; k < bars.length; k++) {
