@@ -1,6 +1,5 @@
 import './style.scss'
 import { IDimensions } from "./interfaces";
-
 let randomizeArray: HTMLElement | null = document.getElementById("random_btn");
 let sortBtn: HTMLElement | null = document.getElementById("sort_btn");
 let selectAlgorithm: HTMLInputElement | null = (document.getElementById("algorithms") as HTMLInputElement);
@@ -15,6 +14,8 @@ let dimensions: IDimensions[] = [];
 let unsortedArray = new Array(numsOfBars);
 let comparisons: HTMLElement | null = document.getElementById("comparisons")
 let algorithmToUse = "";
+let postionChangesCounter = 0;
+let comparisonsCounter = 0;
 
 document.addEventListener("DOMContentLoaded", function () {
   numsOfBars = 10;
@@ -58,6 +59,9 @@ sortBtn?.addEventListener("click", () => {
     case "insertion":
       insertionSort(unsortedArray);
       break;
+    case "quick":
+      quickSort(unsortedArray, 0, unsortedArray.length - 1);
+      break;
     default:
       bubbleSort(unsortedArray);
       break;
@@ -66,7 +70,7 @@ sortBtn?.addEventListener("click", () => {
 
 function generateDimensions() {
   let counter = 1;
-  for (let i = 10; i <= 200; i += 10) {
+  for (let i = 10; i <= 500; i += 10) {
     dimensions.push(
       {
         key: i,
@@ -81,9 +85,7 @@ function createRandomArray() {
   let array = [...Array(numsOfBars).keys()].map(i => i + 1)
   for (var i = array.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
-    var temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
+    [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
 };
@@ -118,10 +120,81 @@ function blockButtons(pointer: string, opacity: string) {
   slider!.style.opacity = opacity;
 };
 
+async function partition(items: number[], left: number, right: number) {
+  let bars = (document.getElementsByClassName("bar") as HTMLCollectionOf<HTMLElement>);
+  let pivotIndex = Math.floor((right + left) / 2); 
+  bars[pivotIndex].style.backgroundColor = "red";
+  var pivot = items[pivotIndex]; 
+  let [i, j] = [left, right];
+
+  for (let i = 0; i < bars.length; i++) {
+    if (i != pivotIndex) {
+      bars[i].style.backgroundColor = "#fff";
+    }
+  };
+
+  while (i <= j) {
+    comparisonsCounter++;
+    while (items[i] < pivot) {
+      i++;
+    }
+    while (items[j] > pivot) {
+      j--;
+    }
+    if (i <= j) {
+      await swap(items, i, j, bars);
+      i++;
+      j--;
+    }
+  }
+
+  return i
+}
+
+async function swap(array: number[], i: number, j: number, bars: HTMLCollectionOf<HTMLElement>) {
+  comparisons!.textContent = `Quick sort
+  \nTime Complexity: O(nlog(n))
+  \nArray length: ${array.length}
+  \nSwitched positions: ${(postionChangesCounter++).toString()}
+  \nComparisons: ${(comparisonsCounter).toString()}`;
+  [array[i], array[j]] = [array[j], array[i]];
+  bars[i].style.height = array[i] * heightFactor + "px";
+  bars[j].style.height = array[j] * heightFactor + "px";
+  bars[i].style.backgroundColor = "blue";
+  bars[j].style.backgroundColor = "blue";
+  await sleep(speedFactor);
+
+  return array;
+}
+
+async function quickSort(items: number[], left: number, right: number) {
+  let bars = (document.getElementsByClassName("bar") as HTMLCollectionOf<HTMLElement>);
+  blockButtons("none", "0.5");
+  let index;
+
+  if (items.length > 1) {
+    index = await partition(items, left, right);
+    if (left < index - 1)
+      await quickSort(items, left, index - 1);
+    if (index < right)
+      await quickSort(items, index, right);
+  }
+
+  if (index === 0 || index === items.length - 1) {
+    for (let k = 0; k < bars.length; k++) {
+      bars[k].style.backgroundColor = "#00ff00";
+      await sleep(1);
+    }
+  }
+
+  blockButtons("auto", "1");
+  return items;
+}
+
 async function bubbleSort(array: number[]) {
   blockButtons("none", "0.5");
-  let postionChangesCounter = 0;
-  let comparisonsCounter = 0;
+  postionChangesCounter = 0;
+  comparisonsCounter = 0;
   let bars: any = document.getElementsByClassName("bar");
   for (let i = 0; i < array.length - 1; i++) {
     comparisonsCounter++;
@@ -160,8 +233,9 @@ async function bubbleSort(array: number[]) {
 async function insertionSort(array: number[]) {
   let bars = (document.getElementsByClassName("bar") as HTMLCollectionOf<HTMLElement>);
   blockButtons("none", "0.5");
-  let postionChangesCounter = 0;
-  let comparisonsCounter = 0;
+  postionChangesCounter = 0;
+  comparisonsCounter = 0;
+
   for (let i = 1; i < array.length; i++) {
 
     for (let j = i; j >= 1; j--) {
@@ -174,11 +248,11 @@ async function insertionSort(array: number[]) {
            \nSwitched positions: ${(postionChangesCounter++).toString()}
            \nComparisons: ${(comparisonsCounter).toString()}`;
 
-        array[j] = array[j-1];
+        array[j] = array[j - 1];
         bars[j].style.height = array[j] * heightFactor + "px";
         bars[j].style.backgroundColor = "red";
 
-        array[j- 1] = aux;
+        array[j - 1] = aux;
         bars[j - 1].style.height = array[j - 1] * heightFactor + "px";
         bars[j - 1].style.backgroundColor = "red";
 
