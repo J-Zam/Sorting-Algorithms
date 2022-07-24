@@ -1,4 +1,3 @@
 ### 🔴 Sorting algorithms visualizer
 
-
-![ezgif com-gif-maker(1)](https://user-images.githubusercontent.com/51100407/180624113-2495b6bc-fa93-42cb-828c-c701097d19b5.gif)
+![ezgif com-gif-maker(2)](https://user-images.githubusercontent.com/51100407/180660769-fd23f270-c971-4227-a48e-2ef1ba36f41e.gif)
