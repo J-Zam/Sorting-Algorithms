@@ -18,13 +18,13 @@ let postionChangesCounter = 0;
 let comparisonsCounter = 0;
 
 document.addEventListener("DOMContentLoaded", function () {
-  numsOfBars = 10;
+  numsOfBars = 250;
   unsortedArray = createRandomArray();
   generateDimensions();
   renderBars(unsortedArray);
   selectAlgorithm!.value = "bubble";
   speed!.value = "50";
-  slider!.value = "10";
+  slider!.value = "250";
 });
 
 slider.addEventListener("input", () => {
