@@ -23,8 +23,8 @@ document.addEventListener("DOMContentLoaded", function () {
   unsortedArray = createRandomArray();
   generateDimensions();
   renderBars(unsortedArray);
-  selectAlgorithm!.value = "bubble";
-  speed!.value = "50";
+  selectAlgorithm!.value = "quick";
+  speed!.value = "25";
   slider!.value = "250";
   restartBtn!.style.display = "none";
 });
@@ -43,7 +43,6 @@ speed?.addEventListener("change", (e: any) => {
 
 selectAlgorithm?.addEventListener("change", () => {
   algorithmToUse = selectAlgorithm!.value;
-  localStorage.setItem("algorithm", algorithmToUse);
 });
 
 randomizeArray?.addEventListener("click", () => {
@@ -65,7 +64,7 @@ sortBtn?.addEventListener("click", () => {
       quickSort(unsortedArray, 0, unsortedArray.length - 1);
       break;
     default:
-      bubbleSort(unsortedArray);
+      quickSort(unsortedArray, 0, unsortedArray.length - 1);
       break;
   }
 });
@@ -167,8 +166,8 @@ async function swap(array: number[], i: number, j: number, bars: HTMLCollectionO
   [array[i], array[j]] = [array[j], array[i]];
   bars[i].style.height = array[i] * heightFactor + "px";
   bars[j].style.height = array[j] * heightFactor + "px";
-  bars[i].style.backgroundColor = "green";
-  bars[j].style.backgroundColor = "green";
+  bars[i].style.backgroundColor = "#76B947";
+  bars[j].style.backgroundColor = "#76B947";
   await sleep(speedFactor);
 
   return array;
