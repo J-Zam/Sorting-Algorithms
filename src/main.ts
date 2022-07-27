@@ -1,7 +1,8 @@
 import './style.scss'
 import { IDimensions } from "./interfaces";
 let randomizeArray: HTMLElement | null = document.getElementById("random_btn");
-let sortBtn: HTMLElement | null = document.getElementById("sort_btn");
+let sortBtn: HTMLElement | null = document.getElementById("sort_btn"); 
+let restartBtn: HTMLElement | null = document.getElementById("restart_btn");
 let selectAlgorithm: HTMLInputElement | null = (document.getElementById("algorithms") as HTMLInputElement);
 let barsContainer: HTMLElement | null = document.getElementById("bars_container");
 let slider: HTMLInputElement | null = (document.getElementById("slider") as HTMLInputElement);
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
   selectAlgorithm!.value = "bubble";
   speed!.value = "50";
   slider!.value = "250";
+  restartBtn!.style.display = "none";
 });
 
 slider.addEventListener("input", () => {
@@ -68,9 +70,13 @@ sortBtn?.addEventListener("click", () => {
   }
 });
 
+restartBtn?.addEventListener("click", () => {
+  document.location.reload();
+});
+
 function generateDimensions() {
   let counter = 1;
-  for (let i = 10; i <= 500; i += 10) {
+  for (let i = 10; i <= 480; i += 10) {
     dimensions.push(
       {
         key: i,
@@ -109,10 +115,11 @@ function sleep(ms: number) {
   })
 };
 
-function blockButtons(pointer: string, opacity: string) {
+function blockButtons(pointer: string, opacity: string, display1: string, display2: string) {
   randomizeArray!.style.pointerEvents = pointer;
   selectAlgorithm!.style.pointerEvents = pointer;
-  sortBtn!.style.pointerEvents = pointer;
+  sortBtn!.style.display = display1;
+  restartBtn!.style.display = display2;
   slider!.style.pointerEvents = pointer;
   randomizeArray!.style.opacity = opacity;
   selectAlgorithm!.style.opacity = opacity;
@@ -160,8 +167,8 @@ async function swap(array: number[], i: number, j: number, bars: HTMLCollectionO
   [array[i], array[j]] = [array[j], array[i]];
   bars[i].style.height = array[i] * heightFactor + "px";
   bars[j].style.height = array[j] * heightFactor + "px";
-  bars[i].style.backgroundColor = "blue";
-  bars[j].style.backgroundColor = "blue";
+  bars[i].style.backgroundColor = "green";
+  bars[j].style.backgroundColor = "green";
   await sleep(speedFactor);
 
   return array;
@@ -169,7 +176,7 @@ async function swap(array: number[], i: number, j: number, bars: HTMLCollectionO
 
 async function quickSort(items: number[], left: number, right: number) {
   let bars = (document.getElementsByClassName("bar") as HTMLCollectionOf<HTMLElement>);
-  blockButtons("none", "0.5");
+  blockButtons("none", "0.5", "none", "inline-block");
   let index;
 
   if (items.length > 1) {
@@ -187,12 +194,12 @@ async function quickSort(items: number[], left: number, right: number) {
     }
   }
 
-  blockButtons("auto", "1");
+  blockButtons("auto", "1","inline-block", "none");
   return items;
 }
 
 async function bubbleSort(array: number[]) {
-  blockButtons("none", "0.5");
+  blockButtons("none", "0.5", "none", "inline-block");
   postionChangesCounter = 0;
   comparisonsCounter = 0;
   let bars: any = document.getElementsByClassName("bar");
@@ -226,13 +233,13 @@ async function bubbleSort(array: number[]) {
     await sleep(speedFactor);
   }
 
-  blockButtons("auto", "1");
+  blockButtons("auto", "1", "inline-block", "none");
   return array;
 }
 
 async function insertionSort(array: number[]) {
   let bars = (document.getElementsByClassName("bar") as HTMLCollectionOf<HTMLElement>);
-  blockButtons("none", "0.5");
+  blockButtons("none", "0.5", "none", "inline-block");
   postionChangesCounter = 0;
   comparisonsCounter = 0;
 
@@ -272,6 +279,6 @@ async function insertionSort(array: number[]) {
     bars[k].style.backgroundColor = "#00ff00";
     await sleep(speedFactor);
   }
-  blockButtons("auto", "1");
+  blockButtons("auto", "1", "inline-block", "none");
   return array;
 }
